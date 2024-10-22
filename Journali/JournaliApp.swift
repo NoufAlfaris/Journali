@@ -11,6 +11,7 @@ import SwiftUI
 struct JournaliApp: App {
     var body: some Scene {
         WindowGroup {
+            EmptyState()
 //            ContentView()
         }
     }
