@@ -15,7 +15,7 @@ struct MainPage: View {
     
     //filtering
     @State var selectedFilter: String = "All"
-    @State var editingJournal: journals?
+//    @State var editingJournal: journals?
     
     var filteredJournals: [journals] {
         let filtered = journals.filter{
@@ -37,6 +37,15 @@ struct MainPage: View {
             formatter.dateStyle = .short //to be only numbers
             return formatter
         }
+    
+    //delete journal function
+    func deleteJournal(journal: journals){
+        journals.removeAll(where: {$0.id == journal.id})
+    } 
+    //edit journal function
+    func editJournal(journal: journals){
+        
+    }
     
     var body: some View {
         
@@ -118,6 +127,16 @@ struct MainPage: View {
                                     }
                                     .tint(.darkPurple)
                                 } //end swipe
+                                
+                                .swipeActions(edge: .trailing){
+                                    Button(action: {
+                                        deleteJournal(journal: journals)
+                                    }) //end action
+                                    {
+                                        Image(systemName: "trash")
+                                    }
+                                    .tint(.deleteRed)
+                                } //end swipe trailing
                             }// end foreach loop
                         }// end list
                         .searchable(text: $searchText)
@@ -184,14 +203,6 @@ struct MainPage: View {
           
         }//end navigation view
     } // end body
-    //filter by bookmark function
-    func filterByBookmark() /*-> [Journal]*/{
-        selectedFilter = "Bookmarked"
-    } //end bookmark function
-    
-    func filterByDate() /*-> [Journal]*/{
-       selectedFilter = "Sorted by Date"
-    } //end date funtion
 } // end struct
 
 #Preview {

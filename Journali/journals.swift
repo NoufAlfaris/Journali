@@ -13,7 +13,7 @@
 //}
 import SwiftUI
 
-@Observable class journals: Identifiable{
+@Observable class journals: Identifiable, Codable{
     let id = UUID()
     var title: String
     var date = Date()
