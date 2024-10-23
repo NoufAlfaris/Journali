@@ -13,13 +13,15 @@
 //}
 import SwiftUI
 
-@Observable class journals{
+@Observable class journals: Identifiable{
+    let id = UUID()
     var title: String
-    var date: Date
+    var date = Date()
     var content: String
     var isBookmarked: Bool
     
     init(title: String, date: Date, content: String, isBookmarked: Bool) {
+//        self.id = id
         self.title = title
         self.date = date
         self.content = content
