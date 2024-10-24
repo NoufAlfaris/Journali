@@ -67,7 +67,7 @@ struct AddJournalView: View {
              
                     
                     
-                    TextField("Type your journal", text: $content, axis: .vertical)
+                    TextField("Type your journal..", text: $content, axis: .vertical)
                         .font(.system(size:20 , weight: .regular))
                         .frame(width: 348.61 , height: 434, alignment: .topLeading)
                         .padding(.top, 20)
