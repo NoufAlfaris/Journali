@@ -13,7 +13,7 @@
 //}
 import SwiftUI
 
-@Observable class journals: Identifiable, Codable{
+struct journals: Identifiable, Codable{
     let id = UUID()
     var title: String
     var date = Date()
@@ -27,4 +27,4 @@ import SwiftUI
         self.content = content
         self.isBookmarked = isBookmarked
     }
-} //end journals class
+} //end journals struct

@@ -19,6 +19,10 @@ struct MainPage: View {
     @State var selectedFilter: String = "All"
     @State var editingJournal: journals? = nil
     
+    //menu with check icon we should use picker
+    var pickerOptions: [String] = ["Bookmarked", "Sorted by Date"]
+    @State var selectedOption = ""
+    
     var filteredJournals: [journals] {
         let filtered = journals.filter{
             searchText.isEmpty || $0.title.lowercased().contains(searchText.lowercased()) || $0.content.lowercased().contains(searchText.lowercased())
@@ -150,12 +154,20 @@ struct MainPage: View {
                                             } //label
                                         } //end Hstack for title and bookmark
                                         
+                                        
                                         Text("\(journals.date, formatter: dateFormatter)")
+                                            .font(.system(size: 14  , weight: .regular))
+                                            .foregroundColor(.dateGrey)
+                                            .padding(.bottom, 7)
+//                                            .padding(.top, 7)
+                                            .frame(width: 77, height: 10)
                                         
                                         Text(journals.content)
                                             .font(.system(size: 18  , weight: .regular))
                                         //                                        .frame(width: 295, height: 105)
                                             .multilineTextAlignment(.leading)
+//                                            .frame(width: 295, height: 105 )
+                                            .padding(.top, 10)
                                         //
                                         //
                                         
@@ -202,6 +214,19 @@ struct MainPage: View {
                                     Menu{
                                         Button("Bookmark") { selectedFilter = "Bookmarked"}
                                         Button("Journal date") { selectedFilter = "Sorted by Date"}
+//                                        Picker("Options", selection: $selectedOption) {
+//                                            ForEach(pickerOptions, id: \.self) { option in
+//                                                Text(option)
+//                                            }
+//                                        }
+//                                        .onChange(of: selectedOption, initial: true){
+//                                            newOption in
+//                                            selectedFilter = selectedOption
+//                                        }
+
+//                                            .onChange(of: selectedOption) { newOption in
+//                                            selectedFilter = selectedOption
+//                                        }
                                         
                                     }//end menu
                                     label: {
