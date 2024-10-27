@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MainPage: View {
-    @State var showAddJournal = false
+    @State var showJournalEntryView = false
     @State var journals: [journals] = []
     @State var searchText: String = ""
     @State var date = Date()
@@ -17,7 +17,7 @@ struct MainPage: View {
     
     //filtering
     @State var selectedFilter: String = "All"
-//    @State var editingJournal: journals?
+    @State var editingJournal: journals? = nil
     
     var filteredJournals: [journals] {
         let filtered = journals.filter{
@@ -45,9 +45,9 @@ struct MainPage: View {
         journals.removeAll(where: {$0.id == journal.id})
     } 
     //edit journal function
-    func editJournal(journal: journals){
-        
-    }
+//    func editJournal(journal: journals){
+//        showAddJournal.toggle()
+//    }
     
     var body: some View {
         
@@ -162,12 +162,16 @@ struct MainPage: View {
                                     }// end VStack
                                     .swipeActions(edge: .leading) {
                                         Button(action: {
-                                            editJournal(journal: journals)
+                                            editingJournal = journals //the journal i wanna edit
+                                            showJournalEntryView.toggle() //toggle show
                                         }) //end action
                                         {
                                             Image(systemName: "pencil")
                                         }
                                         .tint(.editPurple)
+                                        .sheet(isPresented: $showJournalEntryView){
+                                            JournalEntryView(showJournalEntryView: $showJournalEntryView, journals: $journals, editingJournal: $editingJournal, date: $date)
+                                        } // end sheet
                                     } //end swipe
                                     
                                     .swipeActions(edge: .trailing){
@@ -181,9 +185,10 @@ struct MainPage: View {
                                     } //end swipe trailing
                                 }// end foreach loop
                             }// end list
-                            .searchable(text: $searchText)
+                            .searchable(text: $searchText).accentColor(.darkPurple)
                             .listRowSpacing(15)
                         } //end else for when user saves journals/ has journals
+
                         
                     } //end zstack
                         .navigationTitle("Journal")
@@ -216,7 +221,7 @@ struct MainPage: View {
                                     
                                     // button 2 plus
                                     Button(action:{
-                                        showAddJournal.toggle()
+                                        showJournalEntryView.toggle()
                                     })//end action
                                     {
                                         ZStack{
@@ -231,8 +236,8 @@ struct MainPage: View {
                                             
                                         }//end label ZStack
                                     }//end label & button parameter
-                                    .sheet(isPresented: $showAddJournal){
-                                        AddJournalView(showAddJournal: $showAddJournal, journals: $journals, date: $date)
+                                    .sheet(isPresented: $showJournalEntryView){
+                                        JournalEntryView(showJournalEntryView: $showJournalEntryView, journals: $journals, editingJournal: $editingJournal, date: $date)
                                     } // end sheet
                                 } //end Hstack for buttons
                             } // end tool bar item1
@@ -241,6 +246,7 @@ struct MainPage: View {
                 } // end splash screen else
 
         }//end navigation view
+        .tint(.darkPurple) //to make the accent color purple
     } // end body
 } // end struct
 
