@@ -14,43 +14,45 @@
 
 import SwiftUI
 
+
 struct JournalEntryView: View {
-    var components = DateComponents()
+//    var components = DateComponents()
     @Binding var showJournalEntryView: Bool
-    @Binding var journals: [journals]
+    @ObservedObject var jvm: JournalViewModel
+    @Binding var journals: [Journal]
 
     //for editing
-    @Binding var editingJournal: journals?
+    @Binding var editingJournal: Journal?
     
     
-    @State var title: String = ""
+//    @State var title: String = ""
     @Binding var date: Date
-    @State var content: String = ""
-    @State var isBookmarked: Bool = false
+//    @State var content: String = ""
+//    @State var isBookmarked: Bool = false
     
     //date formatter
-    var dateFormatter: DateFormatter {
-            let formatter = DateFormatter()
-            formatter.dateStyle = .short //to be only numbers
-            return formatter
-        }
-    
-    func saveJournal(){
-        if editingJournal == nil{
-            //add new journal
-            let newJournal = Journali.journals(title: title, date: date, content: content, isBookmarked: isBookmarked)
-            journals.append(newJournal)
-        }
-        else {
-            //update existing journal
-            // ? to unwrap
-                editingJournal?.title = title
-                editingJournal?.content = content
-                editingJournal = nil //reset editing journal
-
-        }
-        
-    } //end save journal
+//    var dateFormatter: DateFormatter {
+//            let formatter = DateFormatter()
+//            formatter.dateStyle = .short //to be only numbers
+//            return formatter
+//        }
+//    
+//    func saveJournal(){
+//        if editingJournal == nil{
+//            //add new journal
+//            let newJournal = Journali.journals(title: title, date: date, content: content, isBookmarked: isBookmarked)
+//            journals.append(newJournal)
+//        }
+//        else {
+//            //update existing journal
+//            // ? to unwrap
+//                editingJournal?.title = title
+//                editingJournal?.content = content
+//                editingJournal = nil //reset editing journal
+//
+//        }
+//        
+//    } //end save journal
     
     
     
@@ -64,7 +66,7 @@ struct JournalEntryView: View {
             ScrollView{
                     VStack{
                         
-                        TextField("Title", text: $title , axis: .vertical)
+                        TextField("Title", text: $jvm.title , axis: .vertical)
                                                .font(.system(size: 34, weight: .bold))
                                                .frame(width: 360.62, height: 41, alignment: .leading)
 //                                               .accentColor(.darkPurple)
@@ -72,7 +74,7 @@ struct JournalEntryView: View {
                
                
                
-                                           Text("\(date, formatter: dateFormatter)")
+                        Text("\(date, formatter: jvm.dateFormatter)")
                                                .font(.system(size: 16, weight: .regular))
                                                .frame(width: 87.4, height: 19, alignment: .leading)
                                                .foregroundColor(.grey)
@@ -80,7 +82,7 @@ struct JournalEntryView: View {
                
                
                
-                                           TextField("Type your journal..", text: $content, axis: .vertical)
+                        TextField("Type your journal..", text: $jvm.content, axis: .vertical)
                                                .font(.system(size:20 , weight: .regular))
                                                .frame(width: 348.61 , height: 434, alignment: .topLeading)
                                                .padding(.top, 20)
@@ -91,9 +93,9 @@ struct JournalEntryView: View {
                         
                     } //end VStack
                     .onAppear {
-                                       if let journal = editingJournal { //if i am editing and not adding new
-                                           title = journal.title // Initialize the title state variable
-                                           content = journal.content // Initialize the content state variable
+                        if let journal = jvm.editingJournal { //if i am editing and not adding new
+                            jvm.title = journal.title // Initialize the title state variable
+                            jvm.content = journal.content // Initialize the content state variable
                                        }
                                    }
             } // end scroll view
@@ -113,7 +115,7 @@ struct JournalEntryView: View {
                 ToolbarItem(placement: .topBarTrailing){
                     //save button
                     Button(action:{
-                        saveJournal()
+                        jvm.saveJournal(Journaltitle: jvm.title, Journalcontent: jvm.content, date: date, isBookmarked: jvm.isBookmarked)
                         dismiss()
                     }) // end action
                     {

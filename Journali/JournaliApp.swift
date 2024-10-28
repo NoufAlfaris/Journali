@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct JournaliApp: App {
+//    let persistenceController = PersistenceController.shared
+    
     var body: some Scene {
         WindowGroup {
-            MainPage()
+            MainPage()/*.environment(\.managedObjectContext, persistenceController.container.viewContext)*/
 //            ContentView()
         }
     }

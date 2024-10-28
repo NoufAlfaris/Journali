@@ -1,19 +1,14 @@
 //
-//  journals.swift
+//  Journal.swift
 //  Journali
 //
-//  Created by Nouf on 21/10/2024.
+//  Created by Nouf on 28/10/2024.
 //
+import Foundation
 
-//@Observable
-//
-//class Book: Identifiable {
-//    var title = "Sample Book Title"
-//    var isAvailable = true
-//}
-import SwiftUI
 
-struct journals: Identifiable, Codable{
+
+@Observable class Journal: Identifiable, Codable{
     let id = UUID()
     var title: String
     var date = Date()
