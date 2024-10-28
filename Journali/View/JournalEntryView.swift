@@ -13,52 +13,15 @@
 //
 
 import SwiftUI
-
+import SwiftData
 
 struct JournalEntryView: View {
-//    var components = DateComponents()
+
+    @Environment(\.modelContext) var modelContext
     @Binding var showJournalEntryView: Bool
     @ObservedObject var jvm: JournalViewModel
-    @Binding var journals: [Journal]
-
-    //for editing
-    @Binding var editingJournal: Journal?
-    
-    
-//    @State var title: String = ""
+    @Binding var editingJournal: Journal?  //for editing
     @Binding var date: Date
-//    @State var content: String = ""
-//    @State var isBookmarked: Bool = false
-    
-    //date formatter
-//    var dateFormatter: DateFormatter {
-//            let formatter = DateFormatter()
-//            formatter.dateStyle = .short //to be only numbers
-//            return formatter
-//        }
-//    
-//    func saveJournal(){
-//        if editingJournal == nil{
-//            //add new journal
-//            let newJournal = Journali.journals(title: title, date: date, content: content, isBookmarked: isBookmarked)
-//            journals.append(newJournal)
-//        }
-//        else {
-//            //update existing journal
-//            // ? to unwrap
-//                editingJournal?.title = title
-//                editingJournal?.content = content
-//                editingJournal = nil //reset editing journal
-//
-//        }
-//        
-//    } //end save journal
-    
-    
-    
-
-    
-    
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -69,9 +32,7 @@ struct JournalEntryView: View {
                         TextField("Title", text: $jvm.title , axis: .vertical)
                                                .font(.system(size: 34, weight: .bold))
                                                .frame(width: 360.62, height: 41, alignment: .leading)
-//                                               .accentColor(.darkPurple)
                                                .padding(.top, 30)
-               
                
                
                         Text("\(date, formatter: jvm.dateFormatter)")
@@ -81,23 +42,20 @@ struct JournalEntryView: View {
                                                .padding(.trailing, 273.0)
                
                
-               
                         TextField("Type your journal..", text: $jvm.content, axis: .vertical)
                                                .font(.system(size:20 , weight: .regular))
                                                .frame(width: 348.61 , height: 434, alignment: .topLeading)
                                                .padding(.top, 20)
                                                .padding(.trailing, 10.0)
                                                .padding(.bottom, 170)
-//                                               .accentColor(.darkPurple)
-                        
                         
                     } //end VStack
                     .onAppear {
                         if let journal = jvm.editingJournal { //if i am editing and not adding new
-                            jvm.title = journal.title // Initialize the title state variable
-                            jvm.content = journal.content // Initialize the content state variable
+                            jvm.title = journal.title
+                            jvm.content = journal.content
                                        }
-                                   }
+                                   } //end on appear
             } // end scroll view
             .toolbar{
                 ToolbarItem(placement: .topBarLeading){
@@ -115,7 +73,7 @@ struct JournalEntryView: View {
                 ToolbarItem(placement: .topBarTrailing){
                     //save button
                     Button(action:{
-                        jvm.saveJournal(Journaltitle: jvm.title, Journalcontent: jvm.content, date: date, isBookmarked: jvm.isBookmarked)
+                        saveJournal(Journaltitle: jvm.title, Journalcontent: jvm.content, date: date, isBookmarked: jvm.isBookmarked)
                         dismiss()
                     }) // end action
                     {
@@ -123,14 +81,30 @@ struct JournalEntryView: View {
                             .font(.system(size: 16 , weight: .bold ))
                             .foregroundColor(.darkPurple)
                     } //end label
-                    //on tap gesture i think
                 } //end tool bar item top trailing (AKA Save)
             }// end tool bar
         }//end navigationView
     } // end body
+    
+    
+    func saveJournal(Journaltitle: String, Journalcontent: String, date: Date, isBookmarked: Bool){
+        if editingJournal == nil{
+            //add new journal
+            let newJournal = Journal(title: jvm.title, date: date, content: jvm.content, isBookmarked: isBookmarked)
+            modelContext.insert(newJournal)
+        }
+        else {
+            //update existing journal
+            // ? to unwrap
+            editingJournal?.title = jvm.title
+            editingJournal?.content = jvm.content
+            editingJournal = nil //reset editing journal
+        }
+        //reset values for new entries
+        jvm.title = ""
+        jvm.content = ""
+    } //end save journal
 } // end struct
 
-//#Preview {
-//    AddJournalView(showAddJournal: .constant(true), date: $date)
-//}
+
 

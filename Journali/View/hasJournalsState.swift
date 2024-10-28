@@ -6,23 +6,39 @@
 //
 
 import SwiftUI
-
+import SwiftData
 
 
 struct JournalListView: View {
-    // Pass in your view model as a binding or environment object
-    @ObservedObject var jvm: JournalViewModel // Replace with your actual view model class
+
+    @ObservedObject var jvm: JournalViewModel
     @Binding var showJournalEntryView: Bool
     @Binding var date: Date
+    @Query var journalEntries: [Journal]
+    @Environment(\.modelContext) var modelContext
+    
+    public var filteredJournals: [Journal] {
+        let filtered = journalEntries.filter{
+            jvm.searchText.isEmpty || $0.title.lowercased().contains(jvm.searchText.lowercased()) || $0.content.lowercased().contains(jvm.searchText.lowercased())
+        } // end constant filtered
+        switch jvm.selectedFilter {
+        case "Bookmarked":
+            return filtered.filter {$0.isBookmarked}
+        case "Sorted by Date":
+            return filtered.sorted { $0.date > $1.date}
+        default:
+            return filtered
+        } // end switch
+    } // end filtered journals
 
+    
     var body: some View {
         List{
-            ForEach(jvm.filteredJournals, id: \.id){ journalItem in
+            ForEach(filteredJournals, id: \.id){ journalItem in
                                        VStack(alignment: .leading){
                                            HStack{
                                                Text(journalItem.title)
                                                    .font(.system(size: 24, weight: .semibold))
-                                               //                                        .frame(width: 132, height: 29)
                                                    .foregroundColor(.lavender)
                                                    .multilineTextAlignment(.leading)
    
@@ -36,6 +52,7 @@ struct JournalListView: View {
                                                        .font(.system(size:24))
                                                        .foregroundColor(.lavender)
                                                } //label
+                                               .buttonStyle(BorderlessButtonStyle())
                                            } //end Hstack for title and bookmark
    
    
@@ -43,17 +60,12 @@ struct JournalListView: View {
                                                .font(.system(size: 14  , weight: .regular))
                                                .foregroundColor(.dateGrey)
                                                .padding(.bottom, 7)
-   //                                            .padding(.top, 7)
                                                .frame(width: 77, height: 10)
    
                                            Text(journalItem.content)
                                                .font(.system(size: 18  , weight: .regular))
-                                           //                                        .frame(width: 295, height: 105)
                                                .multilineTextAlignment(.leading)
-   //                                            .frame(width: 295, height: 105 )
                                                .padding(.top, 10)
-                                           //
-                                           //
    
                                        }// end VStack
                                        .swipeActions(edge: .leading) {
@@ -66,14 +78,14 @@ struct JournalListView: View {
                                            }
                                            .tint(.editPurple)
                                            .sheet(isPresented: $showJournalEntryView){
-                                               JournalEntryView(showJournalEntryView: $jvm.showJournalEntryView, jvm: jvm, journals: $jvm.journalEntries, editingJournal: $jvm.editingJournal, date: $jvm.date)
+                                               JournalEntryView(showJournalEntryView: $jvm.showJournalEntryView, jvm: jvm, editingJournal: $jvm.editingJournal, date: $jvm.date)
                                            } // end sheet
                                         
                                        } //end swipe
    
                                        .swipeActions(edge: .trailing){
                                            Button(action: {
-                                               jvm.deleteJournal(Journal: journalItem)
+                                               deleteJournal(Journal: journalItem)
                                            }) //end action
                                            {
                                                Image(systemName: "trash")
@@ -85,5 +97,14 @@ struct JournalListView: View {
                                .searchable(text: $jvm.searchText)
                                .accentColor(.darkPurple)
                                .listRowSpacing(15)
-    }
-}
+    } //end view
+    func deleteJournal(Journal: Journal){
+        if let index = journalEntries.firstIndex(where: {$0.id == Journal.id}){
+            withAnimation{
+                let journalToDelete = journalEntries[index]
+                modelContext.delete(journalToDelete)
+                
+            }
+        }
+    } //end delete
+} //end struct

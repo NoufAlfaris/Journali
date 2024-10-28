@@ -5,10 +5,10 @@
 //  Created by Nouf on 28/10/2024.
 //
 import Foundation
+import SwiftData
 
-
-
-@Observable class Journal: Identifiable, Codable{
+@Model
+ class Journal: Identifiable{
     let id = UUID()
     var title: String
     var date = Date()
@@ -16,7 +16,6 @@ import Foundation
     var isBookmarked: Bool
     
     init(title: String, date: Date, content: String, isBookmarked: Bool) {
-//        self.id = id
         self.title = title
         self.date = date
         self.content = content
