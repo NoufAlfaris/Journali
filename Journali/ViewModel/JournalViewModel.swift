@@ -21,6 +21,8 @@ final class JournalViewModel: ObservableObject {
     @Published var title: String = ""
     @Published var content: String = ""
     @Published var isBookmarked: Bool = false
+    @Published var selectedDate: Date = Date()
+    @Published var showDatePicker: Bool = false
     
     //date formatter
     var dateFormatter: DateFormatter {

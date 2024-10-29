@@ -12,6 +12,8 @@ struct MainPage: View {
 
     @StateObject var jvm = JournalViewModel()
     @Query var journalEntries: [Journal] = []
+//    @Binding var selectedDate: Date
+
     
     var body: some View{
         NavigationView{
@@ -56,7 +58,7 @@ struct MainPage: View {
                                     Menu{
                                         Button("All Entries") { jvm.selectedFilter = "All"}
                                         Button("Bookmark") { jvm.selectedFilter = "Bookmarked"}
-                                        Button("Journal date") { jvm.selectedFilter = "Sorted by Date"}
+                                        Button("Journal date") {jvm.showDatePicker.toggle()}
                                     }//end menu
                                     label: {
                                         ZStack{
@@ -71,6 +73,22 @@ struct MainPage: View {
                                             
                                         } //end label ZStack
                                     } //end label & button parameter
+                                    .popover(isPresented: $jvm.showDatePicker, arrowEdge: .top){
+                                        VStack {
+                                            DatePicker("Select Journal Date", selection: $jvm.selectedDate, displayedComponents: .date)
+                                                .datePickerStyle(GraphicalDatePickerStyle())
+                                                .padding()
+                                            Button("Apply") {
+                                                jvm.showDatePicker.toggle()
+                                                jvm.selectedFilter = "Sorted by Date"
+                                            } //filter by date and close date picker when u choose
+                                                .padding(.bottom, 20)
+                                        } //vstack
+                                        .presentationCompactAdaptation((.popover)) //to make it show as popover instead of sheet on iphone
+                                        .frame(minWidth: 300, minHeight: 200)
+                                        .cornerRadius(10)
+                                    } //popover
+                                   
                                     // button 2 plus
                                     Button(action:{
                                         jvm.showJournalEntryView.toggle()
@@ -104,7 +122,7 @@ struct MainPage: View {
     
     
 } // end struct
-
-#Preview {
-    MainPage()
-}
+//
+//#Preview {
+//    MainPage()
+//}

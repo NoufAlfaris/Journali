@@ -33,6 +33,7 @@ struct JournalEntryView: View {
                                                .font(.system(size: 34, weight: .bold))
                                                .frame(width: 360.62, height: 41, alignment: .leading)
                                                .padding(.top, 30)
+                                               .disableAutocorrection(true)
                
                
                         Text("\(date, formatter: jvm.dateFormatter)")
@@ -48,6 +49,7 @@ struct JournalEntryView: View {
                                                .padding(.top, 20)
                                                .padding(.trailing, 10.0)
                                                .padding(.bottom, 170)
+                                               .disableAutocorrection(true)
                         
                     } //end VStack
                     .onAppear {
